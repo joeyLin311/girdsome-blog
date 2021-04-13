@@ -1,33 +1,98 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-04-10 17:44:19
+ * @LastEditTime: 2021-04-13 21:54:15
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \girdsome-blog\src\pages\Index.vue
+-->
 <template>
   <Layout>
-
-    <!-- Learn how to use images here: https://gridsome.org/docs/images -->
-    <g-image alt="Example image" src="~/favicon.png" width="135" />
-
-    <h1>Hello, world!</h1>
-
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur excepturi labore tempore expedita, et iste tenetur suscipit explicabo! Dolores, aperiam non officia eos quod asperiores
-    </p>
-
-    <p class="home-links">
-      <a href="https://gridsome.org/docs/" target="_blank" rel="noopener">Gridsome Docs</a>
-      <a href="https://github.com/gridsome/gridsome" target="_blank" rel="noopener">GitHub</a>
-    </p>
-
+    <div class="container">
+      <div class="hero">
+        <h1 class="hero-title">{{ $page.general.edges[0].node.title }}</h1>
+        <h2 class="hero-subtitle">
+          {{ $page.general.edges[0].node.description }}
+        </h2>
+      </div>
+      <div class="projects">
+        <div
+          class="project"
+          v-for="post in $page.posts.edges"
+          :key="post.node.title"
+        >
+          <g-link href="/projects/chelsea-landmark/" class="project-link">
+            <img
+              alt="Banana"
+              :src="`http://1.116.105.99:1337${post.node.cover.url}`"
+              width="2560"
+              F
+              class="thumbnail g-image g-image--lazy g-image--loaded"
+            />
+            <h3 class="project-title">{{ post.node.title }}</h3>
+            <div class="categories">
+              <span
+                class="category"
+                v-for="tag in post.node.tags"
+                :key="tag.title"
+                >{{ tag.title }}</span
+              >
+              <span class="category">{{ post.node.theme }}</span>
+            </div>
+          </g-link>
+        </div>
+      </div>
+    </div>
+    <latest />
   </Layout>
 </template>
 
+<page-query>
+query {
+	posts: allStrapiPost {
+		edges {
+			node {
+				title
+				theme
+				tags {
+					title
+				}
+				cover {
+					url
+				}
+			}
+		}
+	}
+	general: allStrapiGeneral {
+		edges {
+			node {
+				title
+				description
+			}
+		}
+	}
+	latests: allStrapiLatest (perPage: 4, page: 0, order: DESC, sortBy: "favorited_count") {
+		edges  {
+			node  {
+				title
+				favorited_count
+			}
+		}
+	}
+}
+</page-query>
+
 <script>
+import Latest from "../components/Latest";
 export default {
   metaInfo: {
-    title: 'Hello, world!'
-  }
-}
+    title: "Portfolio - NWA",
+  },
+  components: {
+    Latest,
+  },
+};
 </script>
 
 <style>
-.home-links a {
-  margin-right: 1rem;
-}
 </style>
